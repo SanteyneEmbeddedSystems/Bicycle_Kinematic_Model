@@ -211,11 +211,11 @@ Knowing that $\overrightarrow{u_1}=-\sin(\varphi+\theta)\overrightarrow{x_0}
 +\cos(\varphi+\theta)\overrightarrow{y_0} $
 
 We have :
-$$
+```math
 \overrightarrow{V_{{O_1}\in R_1/R_0}} =
 V_{O_1} \left( -\sin(\varphi+\theta)\overrightarrow{x_0}
 +\cos(\varphi+\theta)\overrightarrow{y_0} \right)
-$$
+```
 
 So :
 ```math
