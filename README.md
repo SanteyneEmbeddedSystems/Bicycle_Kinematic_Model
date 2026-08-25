@@ -1,72 +1,76 @@
 # Bicycle kinematic model
 
-This repo gives and demonstrates the bicycle kinematic model.
+This repo presents and demonstrates the bicycle kinematic model.
 
 The bicycle kinematic model is a simplified mathematical model used to describe
 and simulate the motion of a wheeled vehicle, such as a car, in two dimensions.
 This model is commonly used in robotics and autonomous vehicle navigation
 because it captures the key aspects of how vehicles steer and move without
-complex dynamics. By treating the vehicle as a two-wheeled "bicycle", this model
-represents the vehicle's front and rear wheels as two points connected by a
-rigid body.
+involving complex dynamics. By representing the vehicle as a two-wheeled
+"bicycle", the model reduces the front and rear wheels to two points connected
+by a rigid body.
+
+The vehicle is assumed to move on a planar surface. The vehicle body is rigid,
+and the wheels are assumed to roll without lateral slip.
 
 ## Parameters
 
-![Bicylcle model parameters](doc/bicycle_model.svg)
+![Bicycle model parameters](doc/bicycle_model.svg)
 
-The ground has the $R_0 (O_0, \overrightarrow{x_0}, \overrightarrow{y_0},
-\overrightarrow{z_0} )$ frame such as $\overrightarrow{z_0}$ is vertical
-ascending.
+The ground is associated with the frame $R_0 (O_0, \overrightarrow{x_0},
+\overrightarrow{y_0}, \overrightarrow{z_0} )$ where $\overrightarrow{z_0}$
+points vertically upward.
 
-The vehicle has the $R_1 (O_1, \overrightarrow{x_1}, \overrightarrow{y_1},
-\overrightarrow{z_1} )$ frame such as :
-* $O_1$ belongs the the axle.
-* $\overrightarrow{x_1}$ is toward the right of the vehicle.
-* $\overrightarrow{y_1}$ is toward the front of the vehicle.
-* $\overrightarrow{z_1} = \overrightarrow{z_0}$
+The vehicle is associated with the frame $R_1 (O_1, \overrightarrow{x_1},
+\overrightarrow{y_1}, \overrightarrow{z_1} )$  where:
+* $O_1$ lies on the longitudinal axis of the vehicle.
+* $\overrightarrow{x_1}$ points to the right of the vehicle.
+* $\overrightarrow{y_1}$ points to the front of the vehicle.
+* $\overrightarrow{z_1} = \overrightarrow{z_0} = \overrightarrow{z}$
 
 Let $F$ be the point at the center of the front wheel.  
 Let $R$ be the point at the center of the rear wheel.  
-Let $L$ be the wheelbase of the vehicle, i.e. the distance $\overline{RF}$.
+Let $L$ be the wheelbase of the vehicle, i.e. the distance $\overline{RF}$.  
+We have $\overline{RO_1} + \overline{O_1F} = \overline{RF} = L$.
 
 The steering angle of the front wheel is $\delta_F$.  
 The steering angle of the rear wheel is $\delta_R$.
 
 The body slip angle is $\varphi$.
 
-The position of the vehicle within the $R_0$ frame is given by the parameters
-$x$, $y$ and $\theta$ such as :
+The position of the vehicle in the $R_0$ frame is described by the parameters
+$x$, $y$ and $\theta$ such that:
 * $\overrightarrow{O_0O_1} = x \times \overrightarrow{x_0} + y \times
 \overrightarrow{y_0}$
 * $\theta = \left(\overrightarrow{x_0}, \overrightarrow{x_1} \right) $
 
-The aim of this study is to give the time derivative of $x$, $y$ and $\theta$ as
-a function of the speed of the vehicle ($V_{O_1}$), the steering angles
+The aim of this study is to give the time derivatives of $x$, $y$ and $\theta$
+as function of the speed of the vehicle ($V_{O_1}$), the steering angles
 ($\delta_F$ and $\delta_R$) and the geometry of the vehicle.
 
 ## Model computation
 
 ### Yaw rate
 
-According to the solid kinematics formula, one has :
+According to the rigid-body kinematics formula, we have:
 ```math
 \overrightarrow{V_{F\in R_1/R_0}} = \overrightarrow{V_{R\in R_1/R_0}}
 + \overrightarrow{FR} \wedge \overrightarrow{\Omega_{R_1/R_0}}
 ```
 
-It can be written :
+This can be written as:
 ```math
 V_F \overrightarrow{x_F} = V_R \overrightarrow{x_R}
 - L\overrightarrow{y_1} \wedge \dot \theta \overrightarrow{z}
 ```
 
-With :
+Where:
 * $\overrightarrow{x_F} =
 -\sin(\delta_F)\overrightarrow{x_1}+\cos(\delta_F)\overrightarrow{y_1}$
 * $\overrightarrow{x_R} =
 -\sin(\delta_R)\overrightarrow{x_1}+\cos(\delta_R)\overrightarrow{y_1}$
 
-In the $R_1$ frame :
+In the $R_1$ frame:
 ```math
 V_F \left( -\sin(\delta_F)\overrightarrow{x_1} 
    + \cos(\delta_F)\overrightarrow{y_1} \right)
@@ -75,7 +79,7 @@ V_F \left( -\sin(\delta_F)\overrightarrow{x_1}
    - L \dot \theta \overrightarrow{x_1}
 ```
 
-On $\overrightarrow{x_1}$ :
+Projecting onto $\overrightarrow{x_1}$ gives:
 ```math
 \begin{aligned}
 &-V_F \sin(\delta_F) = -V_R \sin(\delta_R) - L \dot \theta \\
@@ -84,7 +88,7 @@ On $\overrightarrow{x_1}$ :
 \end{aligned}
 ```
 
-On $\overrightarrow{y_1}$ :
+Projecting onto $\overrightarrow{y_1}$ gives:
 ```math
 \begin{aligned}
 &V_F \cos(\delta_F) = V_R \cos(\delta_R) \\
@@ -92,7 +96,7 @@ On $\overrightarrow{y_1}$ :
 \end{aligned}
 ```
 
-So :
+Therefore:
 ```math
 \begin{aligned}
 \dot \theta
@@ -105,45 +109,45 @@ V_R \frac{ \cos(\delta_R)}{\cos(\delta_F)} \sin(\delta_F) -  V_R \sin(\delta_R)
 
 ### Body slip angle
 
-The last computed formula gives the Optibus yaw rate depending on the speed of
-the rear axle.  
-One would like to have it depending on the speed of the point $O_1$.  
-One wants to have the speed on the $R$ point depending on the speed of the $O_1$
-point.
+The formula obtained above gives the yaw rate as a function of the speed at the
+rear axle.  
+We would like to express it instead as a function of the speed at point $O_1$.  
+Therefore, we need to express the speed at point $R$ as a function of the speed
+at point $O_1$.
 
-According to the solid kinematics formula, one has :
+According to the rigid-body kinematics formula, we have:
 ```math
 \overrightarrow{V_{R\in R_1/R_0}} = \overrightarrow{V_{O_1\in R_1/R_0}}
 + \overrightarrow{RO_1} \wedge \overrightarrow{\Omega_{R_1/R_0}}
 ```
 
-So :
+Therefore:
 ```math
-V_R=V_{O_1}\frac{cos(\varphi)}{cos(\delta_R)}
+V_R = V_{O_1}\frac{\cos(\varphi)}{\cos(\delta_R)}
 ```
 
-One shall express $\varphi$ depending on the input parameters $\delta_R$ and
-$\delta_F$ and the dimensions of the vehicle ($\overline{O_1F}$ and
-$\overline{O_1R}$ ).
+We now need to express $\varphi$ as a function of the input parameters
+$\delta_R$ and $\delta_F$ as well as the vehicle dimensions ($\overline{O_1F}$
+and $\overline{O_1R}$ ).
 
 ![Body slip angle](doc/body_slip_angle.png)
 
 * $\alpha = \delta_F - \varphi $
 * $\beta = \delta_F - \delta_R $
 
-Considering the triangle $O_1FI$, one can write :
+Considering triangle $O_1FI$, one can write:
 ```math
 \frac{\overline{O_1F}}{\sin(\alpha)} =
 \frac{\overline{IF}}{\sin \left( \frac{\pi}{2} + \varphi \right)}
 ```
 
-Considering the triangle $RFI$, one can write :
+Considering triangle $RFI$, one can write:
 ```math
 \frac{\overline{RF}}{\sin(\beta)} =
 \frac{\overline{IF}}{\sin \left( \frac{\pi}{2} + \delta_R \right)}
 ```
 
-So one has :
+Therefore:
 ```math
 \begin{aligned}
 \frac{1}{\overline{IF}}
@@ -192,9 +196,9 @@ So one has :
 \end{aligned}
 ```
 
-### Speed of the point $O_1$
+### Speed at point $O_1$
 
-We want to get the speed of the point $O_1$ :
+We now want to determine the speed at point $O_1$:
 ```math
 \overrightarrow{V_{{O_1}\in R_1/R_0}} = \begin{pmatrix}
 \dot x\\ 
@@ -202,7 +206,7 @@ We want to get the speed of the point $O_1$ :
 \end{pmatrix}_{R_0}
 ```
 
-And we also have :
+We also have:
 ```math
 \overrightarrow{V_{{O_1}\in R_1/R_0}} = V_{O_1}\overrightarrow{u_1}
 ```
@@ -210,14 +214,14 @@ And we also have :
 Knowing that $\overrightarrow{u_1}=-\sin(\varphi+\theta)\overrightarrow{x_0}
 +\cos(\varphi+\theta)\overrightarrow{y_0} $
 
-We have :
+We obtain:
 ```math
 \overrightarrow{V_{{O_1}\in R_1/R_0}} =
 V_{O_1} \left( -\sin(\varphi+\theta)\overrightarrow{x_0}
 +\cos(\varphi+\theta)\overrightarrow{y_0} \right)
 ```
 
-So :
+Therefore:
 ```math
 \left\{
 \begin{aligned}
@@ -227,9 +231,9 @@ So :
 \right.
 ```
 
-### Bicycle model formulas
+### Bicycle model equations
 
-To sum up, the kinematic model of a bicycle is :
+To summarize, the kinematic bicycle model is:
 ```math
 \left\{
 \begin{aligned}
